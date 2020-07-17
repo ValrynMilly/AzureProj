@@ -1,10 +1,13 @@
 import logging
-import azure.functions as func
 import random
-import string
+import azure.functions as func
+
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
-    letters = string.ascii_lowercase
-    letterstring = ''.join(random.choice(letters) for i in range(5))
 
+    numbers = "123456789"
+    numberset = ""
+    for i in range(5):
+        numberset += random.choice(numbers)
+    return numberset
