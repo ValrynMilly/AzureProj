@@ -1,5 +1,5 @@
-.vscode/
-azure-functions-core-tools/
+/.vscode/
+/azure-functions-core-tools/
 bin
 obj
 csx
