@@ -1,18 +1,35 @@
 import logging
 import requests
 import azure.functions as func
+from azure.cosmos import CosmosClient, PatitionKey
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
 
-    numbers = requests.get('ekserverless.azurewebsites.net/api/servicetwo?code=ZXKVAyF2SHjWtTlkIE7Lkgpl15p7iscRDgwdIGbVnZXQe/8irZzhmg==').text
-    letters = requests.get('ekserverless.azurewebsites.net/api/servicethree?code=uPPdbgzMpzq8gjyqcFkM676N5pjilx/aN/oJt3asMuCZVGC7yWOM1A==').text
-    useername = ""
+    numbers = requests.get('servicoone.azurewebsites.net/api/Servicetwo?code=i1RrTrqAOZYz3tYrNOWeHF0CvusKkphai8DF5C5AnQSdUSLiAZ6Q0A==').text
+    letters = requests.get('servicoone.azurewebsites.net/api/Servicethree?code=6UOXpQpR2q9LTNEr9jkwHjB0XpwFqdqoN8FS72mmIrTq5YkYjatEvg==').text
+    username = ""
     for i in range(5):
-        useername += numbers[i]
-        useername += letters[i]
+        username += numbers[i]
+        username += letters[i]
         
-    return useername
-    
+        key = ''
+    endpoint = ''
+
+    client = CosmosClient(endpoint, key)
+
+    database_name = "Usernames"
+    database = client.create_database_if_not_exists(id=database_name)
+
+    container_name = "UsernameCont"
+    container = database.create_container_if_not_exists(
+        id=container_name,
+        Partition_key=PartitionKey(path="/username") 
+    )
+    username_to_add = {
+        "id": username
+    }
+    container.create_iteam(body=username_to_add)
+    return username
